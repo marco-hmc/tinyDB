@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cassert>
+#include <cerrno>
 #include <cstring>
 #include <iostream>
 
@@ -39,10 +40,10 @@ Pager::~Pager() {
 size_t Pager::pageSize() const { return m_pages_size; }
 
 void* Pager::getPage(uint32_t page_num, bool needToReadFromFile /*= true*/) {
-    // if (m_pages.size() <= page_num) {
-    //     std::cerr << "out of limitation: " << std::strerror(errno) << ".\n";
-    //     std::exit(EXIT_FAILURE);
-    // }
+    if (m_pages.size() <= page_num) {
+        spdlog::error("out of limitation: {}", std::strerror(errno));
+        std::exit(EXIT_FAILURE);
+    }
 
     if (needToReadFromFile && m_pages[page_num] == nullptr) {
         void* page = malloc(PAGE_SIZE);
@@ -50,13 +51,13 @@ void* Pager::getPage(uint32_t page_num, bool needToReadFromFile /*= true*/) {
         if (m_file_bytes_length > 0 && m_file_bytes_length >= page_num * PAGE_SIZE) {
             m_file.seekg(page_num * PAGE_SIZE, std::ios::beg);
             if (m_file.fail()) {
-                std::cerr << "get page error seek: \n";
+                spdlog::error("get page error seek");
                 std::exit(EXIT_FAILURE);
             }
 
             m_file.read(static_cast<char*>(page), PAGE_SIZE);
             if (m_file.fail() && !m_file.eof()) {
-                std::cerr << "get page error read: \n";
+                spdlog::error("get page error seek");
                 std::exit(EXIT_FAILURE);
             }
         }
@@ -72,22 +73,21 @@ void* Pager::getPage(uint32_t page_num, bool needToReadFromFile /*= true*/) {
 
 void Pager::pager_flush(uint32_t page_num) {
     if (!m_pages[page_num]) {
-        std::cerr << "flush error by empty page at " << page_num << ", size: " << PAGE_SIZE
-                  << " .\n";
+        spdlog::error("flush error by empty page at: {},    size: {}", page_num, PAGE_SIZE);
         std::exit(EXIT_FAILURE);
     }
 
     // 将文件指针移动到正确的位置
     m_file.seekp(page_num * PAGE_SIZE, std::ios::beg);
     if (m_file.fail()) {
-        std::cerr << "flush seek page at " << page_num << ", error: \n ";
+        spdlog::error("flush seek page at: {},      error: {}", page_num, std::strerror(errno));
         std::exit(EXIT_FAILURE);
     }
 
     // 写入数据到文件
     m_file.write(static_cast<char*>(m_pages[page_num]), PAGE_SIZE);
     if (m_file.fail()) {
-        std::cerr << "flush write page at " << page_num << ", error: .\n";
+        spdlog::error("flush write page at: {},      error: {}", page_num, std::strerror(errno));
         std::exit(EXIT_FAILURE);
     }
 }

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <stdexcept>
 
 #include "../include/Macros.h"
 #include "Cursor.h"
@@ -172,14 +173,14 @@ uint32_t* Table::internal_node_cell(void* node, uint32_t cell_num) {
 uint32_t* Table::internal_node_child(void* node, uint32_t child_num) {
     uint32_t num_keys = *internal_node_num_keys(node);
     if (child_num > num_keys) {
-        std::cerr << "Tried to access child_num " << child_num << " > num_keys " << num_keys
-                  << '\n';
-        std::exit(EXIT_FAILURE);
-    } else if (child_num == num_keys) {
-        return internal_node_right_child(node);
-    } else {
-        return internal_node_cell(node, child_num);
+        spdlog::error("Tried to access child_num: {},    num_keys: {}", child_num, num_keys);
+        throw std::runtime_error("An error occurred");
     }
+
+    if (child_num == num_keys) {
+        return internal_node_right_child(node);
+    }
+    return internal_node_cell(node, child_num);
 }
 
 uint32_t* Table::internal_node_key(void* node, uint32_t key_num) {
