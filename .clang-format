@@ -1,0 +1,19 @@
+---
+Language:           Cpp
+BasedOnStyle:       Google                  # 基于Google风格
+IndentWidth:        4                       # 缩进宽度
+TabWidth:           4                       # Tab的空格大小为4
+UseTab:             Never                   # 不使用Tab，tab为空格
+SortIncludes:       true                    # 头文件排序，不会改行（删除用于区分模块的行，不会被删除），可以删除重复头文件，不会删除未使用的头文件
+AccessModifierOffset: -4                    # 访问权限符(public, private, protected)的缩进向左缩进四格
+AlignEscapedNewlines: Left                  # 换行符左对齐
+AlwaysBreakTemplateDeclarations: true       # 模板参数总是换行
+
+NamespaceIndentation: All                   # 命名空间缩进
+BreakBeforeBraces: Allman                   # 函数后面的开括号，新起一行
+AlignAfterOpenBracket: DontAlign            # 不特意对齐函数调用或声明中的参数   
+BinPackArguments: true                      # 函数参数换行
+BinPackParameters: true                     # 函数参数换行
+ColumnLimit: 130                            # 列的最大宽度
+AllowShortFunctionsOnASingleLine: None      # 允许短函数不是单独
+...

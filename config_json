@@ -1,0 +1,5 @@
+{
+  "log_file": "logs/logfile.log",
+  "default_filename": "/home/marco/0_codeRepo/2_project/3_cppProject/4_tinytinyDB/demo/demo_0/build/demo_debug.db",
+  "default_export_path": "/home/marco/0_codeRepo/2_project/3_cppProject/4_tinytinyDB/demo/demo_0/test/bin/export_debug.csv"
+}
